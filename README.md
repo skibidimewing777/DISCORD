@@ -1,8 +1,8 @@
-# Discord funcional (rápido)
+# ZennedarChat
 
-Mini clon de Discord con:
+Chat en tiempo real estilo Discord con:
 
-- login con nombre de usuario
+- página de registro previa
 - canales de chat
 - creación de canales en vivo
 - mensajería en tiempo real con Socket.IO
@@ -22,6 +22,9 @@ npm start
 ```
 
 Abrí `http://localhost:3000`.
+
+1. Primero vas a ver la pantalla de registro.
+2. Al registrarte, entrás automáticamente al chat.
 
 ## Scripts
 

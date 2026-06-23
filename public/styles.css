@@ -48,7 +48,7 @@ body {
 
 .create-channel input,
 .message-form input,
-.login-card input {
+.register-card input {
   border: 1px solid #4e5058;
   background: #1e1f22;
   color: #f2f3f5;
@@ -229,26 +229,54 @@ button:disabled {
   flex-shrink: 0;
 }
 
-.login-modal {
-  position: fixed;
-  inset: 0;
-  background: rgb(0 0 0 / 0.45);
+.register-page {
   display: grid;
   place-items: center;
+  background:
+    radial-gradient(circle at 20% 10%, #3a4cbe 0%, transparent 35%),
+    radial-gradient(circle at 80% 90%, #7c2d8d 0%, transparent 35%),
+    #1e1f22;
 }
 
-.login-card {
-  width: min(90vw, 360px);
+.register-wrapper {
+  width: 100%;
+  padding: 1rem;
+}
+
+.register-card {
+  width: min(92vw, 420px);
   background: #2b2d31;
   border: 1px solid #3f4147;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.2rem;
   display: grid;
   gap: 0.75rem;
+  margin-inline: auto;
 }
 
-.login-card h2 {
+.brand-pill {
   margin: 0;
+  width: fit-content;
+  background: #5865f2;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.register-card h1 {
+  margin: 0;
+}
+
+.register-subtitle {
+  margin: 0;
+  color: #a5a7ad;
+}
+
+.register-card label {
+  font-size: 0.85rem;
+  color: #d3d5d8;
 }
 
 @media (max-width: 900px) {

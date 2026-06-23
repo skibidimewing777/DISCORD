@@ -1,8 +1,5 @@
 const socket = io();
-
-const loginModal = document.getElementById("loginModal");
-const loginForm = document.getElementById("loginForm");
-const usernameInput = document.getElementById("usernameInput");
+const STORAGE_KEY = "zennedarchat-user";
 
 const channelsContainer = document.getElementById("channels");
 const createChannelForm = document.getElementById("createChannelForm");
@@ -26,6 +23,26 @@ const QUICK_EMOJIS = ["😀", "😂", "😎", "🥶", "🔥", "❤️", "👍", 
 let currentUser = null;
 let currentChannel = null;
 let channels = [];
+
+function getRegisteredUser() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    const username = String(parsed?.username || "").trim().slice(0, 24);
+    if (!username) return null;
+    return { username };
+  } catch {
+    return null;
+  }
+}
+
+const registeredUser = getRegisteredUser();
+if (!registeredUser) {
+  window.location.replace("/");
+} else {
+  currentUser = registeredUser.username;
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -174,22 +191,6 @@ function setupEmojiPicker() {
   });
 }
 
-loginForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const username = usernameInput.value.trim();
-  if (!username) return;
-
-  socket.emit("set-username", username, (result) => {
-    if (!result?.ok) {
-      alert(result?.message || "Usuario inválido.");
-      return;
-    }
-    currentUser = result.username;
-    loginModal.style.display = "none";
-    joinChannel("general");
-  });
-});
-
 createChannelForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const name = channelInput.value.trim();
@@ -237,6 +238,19 @@ clearMessagesButton.addEventListener("click", () => {
 
 socket.on("connect", () => {
   setConnectedState(true);
+  if (!currentUser) return;
+  socket.emit("set-username", currentUser, (result) => {
+    if (!result?.ok) {
+      localStorage.removeItem(STORAGE_KEY);
+      alert(result?.message || "No se pudo iniciar la sesión.");
+      window.location.replace("/");
+      return;
+    }
+
+    currentUser = result.username;
+    const targetChannel = currentChannel || "general";
+    joinChannel(targetChannel);
+  });
 });
 
 socket.on("disconnect", () => {

@@ -102,6 +102,10 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
 
+app.get("/chat", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "chat.html"));
+});
+
 io.on("connection", (socket) => {
   socket.emit("channels-updated", getChannelsPayload());
 
@@ -226,5 +230,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`Discord app running on http://localhost:${PORT}`);
+  console.log(`ZennedarChat running on http://localhost:${PORT}`);
 });

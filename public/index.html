@@ -3,82 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Discord funcional</title>
+    <title>ZennedarChat - Registro</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <div class="app">
-      <aside class="sidebar">
-        <h1>Discord</h1>
-        <form id="createChannelForm" class="create-channel">
-          <input
-            id="channelInput"
-            type="text"
-            maxlength="32"
-            placeholder="nuevo-canal"
-            autocomplete="off"
-          />
-          <button type="submit">Crear</button>
-        </form>
-        <div id="channels" class="channels"></div>
-      </aside>
+  <body class="register-page">
+    <main class="register-wrapper">
+      <form id="registerForm" class="register-card">
+        <p class="brand-pill">ZennedarChat</p>
+        <h1>Registro rápido</h1>
+        <p class="register-subtitle">Creá tu usuario para entrar al chat.</p>
 
-      <main class="chat">
-        <header class="chat-header">
-          <h2 id="channelTitle"># sin-canal</h2>
-          <div class="chat-header-actions">
-            <button id="clearMessagesButton" type="button" class="clear-messages">
-              Limpiar mensajes
-            </button>
-            <span id="statusText">Desconectado</span>
-          </div>
-        </header>
-        <section id="messages" class="messages"></section>
-        <form id="messageForm" class="message-form">
-          <button
-            id="emojiToggleButton"
-            type="button"
-            class="emoji-toggle"
-            title="Agregar emoji"
-            disabled
-          >
-            🙂
-          </button>
-          <input
-            id="messageInput"
-            type="text"
-            maxlength="500"
-            placeholder="Escribí un mensaje..."
-            autocomplete="off"
-            disabled
-          />
-          <button id="sendButton" type="submit" disabled>Enviar</button>
-        </form>
-        <div id="emojiPicker" class="emoji-picker hidden"></div>
-      </main>
-
-      <aside class="members">
-        <h3>Miembros conectados</h3>
-        <ul id="membersList"></ul>
-      </aside>
-    </div>
-
-    <div id="loginModal" class="login-modal">
-      <form id="loginForm" class="login-card">
-        <h2>Entrar al chat</h2>
+        <label for="registerUsername">Nombre de usuario</label>
         <input
-          id="usernameInput"
+          id="registerUsername"
           type="text"
           maxlength="24"
-          placeholder="Tu nombre"
+          placeholder="Ej: zennedar_pro"
           autocomplete="off"
           required
         />
-        <button type="submit">Entrar</button>
-      </form>
-    </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="app.js"></script>
+        <label for="registerDisplayName">Nombre visible (opcional)</label>
+        <input
+          id="registerDisplayName"
+          type="text"
+          maxlength="24"
+          placeholder="Ej: Zennedar"
+          autocomplete="off"
+        />
+
+        <button type="submit">Entrar a ZennedarChat</button>
+      </form>
+    </main>
+
+    <script src="register.js"></script>
   </body>
 </html>
