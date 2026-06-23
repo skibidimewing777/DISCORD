@@ -113,9 +113,21 @@ button:disabled {
   align-items: center;
 }
 
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
 .chat-header h2 {
   margin: 0;
   font-size: 1rem;
+}
+
+.clear-messages {
+  background: #a12828;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.8rem;
 }
 
 .messages {

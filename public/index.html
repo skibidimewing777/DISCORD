@@ -26,7 +26,12 @@
       <main class="chat">
         <header class="chat-header">
           <h2 id="channelTitle"># sin-canal</h2>
-          <span id="statusText">Desconectado</span>
+          <div class="chat-header-actions">
+            <button id="clearMessagesButton" type="button" class="clear-messages">
+              Limpiar mensajes
+            </button>
+            <span id="statusText">Desconectado</span>
+          </div>
         </header>
         <section id="messages" class="messages"></section>
         <form id="messageForm" class="message-form">

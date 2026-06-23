@@ -73,6 +73,19 @@ function emitMembersUpdated(channelName) {
   });
 }
 
+function getNormalizedMessages(channel) {
+  return channel.messages.map((message) => ({
+    ...message,
+    avatarUrl: message.avatarUrl || DEFAULT_AVATAR_URL,
+  }));
+}
+
+function clearAllMessages() {
+  for (const channel of channels.values()) {
+    channel.messages = [];
+  }
+}
+
 function storeAndBroadcastMessage(channel, message) {
   channel.messages.push(message);
   if (channel.messages.length > MAX_MESSAGES_PER_CHANNEL) {
@@ -155,7 +168,7 @@ io.on("connection", (socket) => {
     callback?.({
       ok: true,
       channelName: nextChannel.name,
-      messages: nextChannel.messages,
+      messages: getNormalizedMessages(nextChannel),
       members: getMembersForChannel(nextChannel),
     });
   });
@@ -188,6 +201,13 @@ io.on("connection", (socket) => {
       createdAt: new Date().toISOString(),
     };
     storeAndBroadcastMessage(channel, message);
+    callback?.({ ok: true });
+  });
+
+  socket.on("clear-all-messages", (callback) => {
+    clearAllMessages();
+    emitChannelsUpdated();
+    io.emit("messages-cleared");
     callback?.({ ok: true });
   });
 

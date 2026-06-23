@@ -16,6 +16,7 @@ const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 const emojiToggleButton = document.getElementById("emojiToggleButton");
 const emojiPicker = document.getElementById("emojiPicker");
+const clearMessagesButton = document.getElementById("clearMessagesButton");
 
 const membersList = document.getElementById("membersList");
 
@@ -27,7 +28,7 @@ let currentChannel = null;
 let channels = [];
 
 function escapeHtml(value) {
-  return value
+  return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -53,36 +54,59 @@ function avatarImg(avatarUrl, username) {
   return `<img class="avatar" src="${escapeHtml(avatarUrl || DEFAULT_AVATAR_URL)}" alt="Avatar de ${safeUsername}" />`;
 }
 
+function normalizeMember(member) {
+  if (typeof member === "string") {
+    return { username: member, avatarUrl: DEFAULT_AVATAR_URL };
+  }
+  return {
+    username: member?.username || "usuario",
+    avatarUrl: member?.avatarUrl || DEFAULT_AVATAR_URL,
+  };
+}
+
+function normalizeMessage(message) {
+  return {
+    id: message?.id,
+    channelName: message?.channelName || currentChannel,
+    username: message?.username || "usuario",
+    avatarUrl: message?.avatarUrl || DEFAULT_AVATAR_URL,
+    text: message?.text || "",
+    createdAt: message?.createdAt || new Date().toISOString(),
+  };
+}
+
 function renderMembers(members) {
   membersList.innerHTML = "";
   if (!members.length) return;
   members.forEach((member) => {
+    const normalized = normalizeMember(member);
     const li = document.createElement("li");
     li.className = "member-item";
     li.innerHTML = `
-      ${avatarImg(member.avatarUrl, member.username)}
-      <span>${escapeHtml(member.username)}</span>
+      ${avatarImg(normalized.avatarUrl, normalized.username)}
+      <span>${escapeHtml(normalized.username)}</span>
     `;
     membersList.appendChild(li);
   });
 }
 
 function appendMessage(message) {
+  const normalized = normalizeMessage(message);
   const article = document.createElement("article");
   article.className = "message";
-  const createdAt = new Date(message.createdAt);
+  const createdAt = new Date(normalized.createdAt);
   const time = createdAt.toLocaleTimeString("es-AR", {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const safeUsername = escapeHtml(message.username);
+  const safeUsername = escapeHtml(normalized.username);
   article.innerHTML = `
     <div class="message-header">
-      ${avatarImg(message.avatarUrl, message.username)}
+      ${avatarImg(normalized.avatarUrl, normalized.username)}
       <strong>${safeUsername}</strong>
       <small>${time}</small>
     </div>
-    <div>${escapeHtml(message.text)}</div>
+    <div>${escapeHtml(normalized.text)}</div>
   `;
   messagesEl.appendChild(article);
   messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -120,9 +144,9 @@ function joinChannel(channelName) {
 
     currentChannel = result.channelName;
     channelTitle.textContent = `# ${currentChannel}`;
+    toggleMessageComposer(true);
     renderMessages(result.messages || []);
     renderMembers(result.members || []);
-    toggleMessageComposer(true);
     renderChannels();
   });
 }
@@ -201,6 +225,16 @@ emojiToggleButton.addEventListener("click", () => {
   emojiPicker.classList.toggle("hidden");
 });
 
+clearMessagesButton.addEventListener("click", () => {
+  socket.emit("clear-all-messages", (result) => {
+    if (!result?.ok) {
+      alert(result?.message || "No se pudieron limpiar los mensajes.");
+      return;
+    }
+    renderMessages([]);
+  });
+});
+
 socket.on("connect", () => {
   setConnectedState(true);
 });
@@ -222,6 +256,10 @@ socket.on("members-updated", ({ channelName, members }) => {
 socket.on("new-message", (message) => {
   if (message.channelName !== currentChannel) return;
   appendMessage(message);
+});
+
+socket.on("messages-cleared", () => {
+  renderMessages([]);
 });
 
 setupEmojiPicker();
