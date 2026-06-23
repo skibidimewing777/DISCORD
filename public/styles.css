@@ -135,17 +135,15 @@ button:disabled {
 
 .message-header {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
   margin-bottom: 0.2rem;
   font-size: 0.9rem;
 }
 
-.message-header strong.system {
-  color: #f0b232;
-}
-
 .message small {
   color: #a5a7ad;
+  margin-left: auto;
 }
 
 .message-form {
@@ -153,6 +151,29 @@ button:disabled {
   gap: 0.5rem;
   border-top: 1px solid #3f4147;
   padding: 0.8rem 1rem;
+}
+
+.emoji-toggle {
+  background: #3b3d45;
+  padding-inline: 0.6rem;
+}
+
+.emoji-picker {
+  border-top: 1px solid #3f4147;
+  padding: 0.55rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.emoji-picker.hidden {
+  display: none;
+}
+
+.emoji-button {
+  background: #3b3d45;
+  font-size: 1rem;
+  padding: 0.35rem 0.45rem;
 }
 
 .members {
@@ -179,6 +200,21 @@ button:disabled {
   background: #3a3c43;
   border-radius: 6px;
   padding: 0.45rem 0.55rem;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #4e5058;
+  flex-shrink: 0;
 }
 
 .login-modal {

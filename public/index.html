@@ -30,6 +30,15 @@
         </header>
         <section id="messages" class="messages"></section>
         <form id="messageForm" class="message-form">
+          <button
+            id="emojiToggleButton"
+            type="button"
+            class="emoji-toggle"
+            title="Agregar emoji"
+            disabled
+          >
+            🙂
+          </button>
           <input
             id="messageInput"
             type="text"
@@ -40,6 +49,7 @@
           />
           <button id="sendButton" type="submit" disabled>Enviar</button>
         </form>
+        <div id="emojiPicker" class="emoji-picker hidden"></div>
       </main>
 
       <aside class="members">

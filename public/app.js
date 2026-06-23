@@ -14,8 +14,13 @@ const messagesEl = document.getElementById("messages");
 const messageForm = document.getElementById("messageForm");
 const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
+const emojiToggleButton = document.getElementById("emojiToggleButton");
+const emojiPicker = document.getElementById("emojiPicker");
 
 const membersList = document.getElementById("membersList");
+
+const DEFAULT_AVATAR_URL = "/assets/default-avatar.svg";
+const QUICK_EMOJIS = ["😀", "😂", "😎", "🥶", "🔥", "❤️", "👍", "🎉", "🤝", "😴"];
 
 let currentUser = null;
 let currentChannel = null;
@@ -37,6 +42,15 @@ function setConnectedState(connected) {
 function toggleMessageComposer(enabled) {
   messageInput.disabled = !enabled;
   sendButton.disabled = !enabled;
+  emojiToggleButton.disabled = !enabled;
+  if (!enabled) {
+    emojiPicker.classList.add("hidden");
+  }
+}
+
+function avatarImg(avatarUrl, username) {
+  const safeUsername = escapeHtml(username);
+  return `<img class="avatar" src="${escapeHtml(avatarUrl || DEFAULT_AVATAR_URL)}" alt="Avatar de ${safeUsername}" />`;
 }
 
 function renderMembers(members) {
@@ -44,7 +58,11 @@ function renderMembers(members) {
   if (!members.length) return;
   members.forEach((member) => {
     const li = document.createElement("li");
-    li.textContent = member;
+    li.className = "member-item";
+    li.innerHTML = `
+      ${avatarImg(member.avatarUrl, member.username)}
+      <span>${escapeHtml(member.username)}</span>
+    `;
     membersList.appendChild(li);
   });
 }
@@ -57,11 +75,11 @@ function appendMessage(message) {
     hour: "2-digit",
     minute: "2-digit",
   });
+  const safeUsername = escapeHtml(message.username);
   article.innerHTML = `
     <div class="message-header">
-      <strong class="${message.username === "system" ? "system" : ""}">
-        ${escapeHtml(message.username)}
-      </strong>
+      ${avatarImg(message.avatarUrl, message.username)}
+      <strong>${safeUsername}</strong>
       <small>${time}</small>
     </div>
     <div>${escapeHtml(message.text)}</div>
@@ -106,6 +124,29 @@ function joinChannel(channelName) {
     renderMembers(result.members || []);
     toggleMessageComposer(true);
     renderChannels();
+  });
+}
+
+function insertEmoji(emoji) {
+  const start = messageInput.selectionStart ?? messageInput.value.length;
+  const end = messageInput.selectionEnd ?? messageInput.value.length;
+  const current = messageInput.value;
+  messageInput.value = current.slice(0, start) + emoji + current.slice(end);
+  const nextCursor = start + emoji.length;
+  messageInput.setSelectionRange(nextCursor, nextCursor);
+  messageInput.focus();
+}
+
+function setupEmojiPicker() {
+  QUICK_EMOJIS.forEach((emoji) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "emoji-button";
+    button.textContent = emoji;
+    button.addEventListener("click", () => {
+      insertEmoji(emoji);
+    });
+    emojiPicker.appendChild(button);
   });
 }
 
@@ -155,6 +196,11 @@ messageForm.addEventListener("submit", (event) => {
   });
 });
 
+emojiToggleButton.addEventListener("click", () => {
+  if (emojiToggleButton.disabled) return;
+  emojiPicker.classList.toggle("hidden");
+});
+
 socket.on("connect", () => {
   setConnectedState(true);
 });
@@ -178,5 +224,6 @@ socket.on("new-message", (message) => {
   appendMessage(message);
 });
 
+setupEmojiPicker();
 toggleMessageComposer(false);
 setConnectedState(false);

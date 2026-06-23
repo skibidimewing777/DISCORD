@@ -11,6 +11,7 @@ const io = new Server(httpServer);
 const PORT = process.env.PORT || 3000;
 const MAX_MESSAGES_PER_CHANNEL = 200;
 const DEFAULT_CHANNEL = "general";
+const DEFAULT_AVATAR_URL = "/assets/default-avatar.svg";
 
 const usersBySocketId = new Map();
 const channels = new Map();
@@ -56,8 +57,11 @@ function getMembersForChannel(channel) {
   return [...channel.members]
     .map((socketId) => usersBySocketId.get(socketId))
     .filter(Boolean)
-    .map((user) => user.username)
-    .sort((a, b) => a.localeCompare(b));
+    .map((user) => ({
+      username: user.username,
+      avatarUrl: user.avatarUrl || DEFAULT_AVATAR_URL,
+    }))
+    .sort((a, b) => a.username.localeCompare(b.username));
 }
 
 function emitMembersUpdated(channelName) {
@@ -67,16 +71,6 @@ function emitMembersUpdated(channelName) {
     channelName,
     members: getMembersForChannel(channel),
   });
-}
-
-function makeSystemMessage(channelName, text) {
-  return {
-    id: randomUUID(),
-    channelName,
-    username: "system",
-    text,
-    createdAt: new Date().toISOString(),
-  };
 }
 
 function storeAndBroadcastMessage(channel, message) {
@@ -105,8 +99,12 @@ io.on("connection", (socket) => {
       return;
     }
 
-    usersBySocketId.set(socket.id, { username, channelName: null });
-    callback?.({ ok: true, username });
+    usersBySocketId.set(socket.id, {
+      username,
+      avatarUrl: DEFAULT_AVATAR_URL,
+      channelName: null,
+    });
+    callback?.({ ok: true, username, avatarUrl: DEFAULT_AVATAR_URL });
   });
 
   socket.on("create-channel", (rawChannelName, callback) => {
@@ -154,12 +152,6 @@ io.on("connection", (socket) => {
     emitChannelsUpdated();
     emitMembersUpdated(nextChannel.name);
 
-    const joinSystemMessage = makeSystemMessage(
-      nextChannel.name,
-      `${user.username} se unió al canal`
-    );
-    storeAndBroadcastMessage(nextChannel, joinSystemMessage);
-
     callback?.({
       ok: true,
       channelName: nextChannel.name,
@@ -191,6 +183,7 @@ io.on("connection", (socket) => {
       id: randomUUID(),
       channelName: channel.name,
       username: user.username,
+      avatarUrl: user.avatarUrl || DEFAULT_AVATAR_URL,
       text: text.slice(0, 500),
       createdAt: new Date().toISOString(),
     };
@@ -209,12 +202,6 @@ io.on("connection", (socket) => {
     channel.members.delete(socket.id);
     emitChannelsUpdated();
     emitMembersUpdated(channel.name);
-
-    const leaveSystemMessage = makeSystemMessage(
-      channel.name,
-      `${user.username} se desconectó`
-    );
-    storeAndBroadcastMessage(channel, leaveSystemMessage);
   });
 });
 
