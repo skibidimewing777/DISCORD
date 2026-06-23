@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord funcional</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <h1>Discord</h1>
+        <form id="createChannelForm" class="create-channel">
+          <input
+            id="channelInput"
+            type="text"
+            maxlength="32"
+            placeholder="nuevo-canal"
+            autocomplete="off"
+          />
+          <button type="submit">Crear</button>
+        </form>
+        <div id="channels" class="channels"></div>
+      </aside>
+
+      <main class="chat">
+        <header class="chat-header">
+          <h2 id="channelTitle"># sin-canal</h2>
+          <span id="statusText">Desconectado</span>
+        </header>
+        <section id="messages" class="messages"></section>
+        <form id="messageForm" class="message-form">
+          <input
+            id="messageInput"
+            type="text"
+            maxlength="500"
+            placeholder="Escribí un mensaje..."
+            autocomplete="off"
+            disabled
+          />
+          <button id="sendButton" type="submit" disabled>Enviar</button>
+        </form>
+      </main>
+
+      <aside class="members">
+        <h3>Miembros conectados</h3>
+        <ul id="membersList"></ul>
+      </aside>
+    </div>
+
+    <div id="loginModal" class="login-modal">
+      <form id="loginForm" class="login-card">
+        <h2>Entrar al chat</h2>
+        <input
+          id="usernameInput"
+          type="text"
+          maxlength="24"
+          placeholder="Tu nombre"
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
