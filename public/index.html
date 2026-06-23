@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZennedarChat - Registro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="register-page">
+    <main class="register-wrapper">
+      <form id="registerForm" class="register-card">
+        <p class="brand-pill">ZennedarChat</p>
+        <h1>Registro rápido</h1>
+        <p class="register-subtitle">Creá tu usuario para entrar al chat.</p>
+
+        <label for="registerUsername">Nombre de usuario</label>
+        <input
+          id="registerUsername"
+          type="text"
+          maxlength="24"
+          placeholder="Ej: zennedar_pro"
+          autocomplete="off"
+          required
+        />
+
+        <label for="registerDisplayName">Nombre visible (opcional)</label>
+        <input
+          id="registerDisplayName"
+          type="text"
+          maxlength="24"
+          placeholder="Ej: Zennedar"
+          autocomplete="off"
+        />
+
+        <button type="submit">Entrar a ZennedarChat</button>
+      </form>
+    </main>
+
+    <script src="register.js"></script>
+  </body>
+</html>

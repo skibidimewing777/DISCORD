@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZennedarChat</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <h1>ZennedarChat</h1>
+        <form id="createChannelForm" class="create-channel">
+          <input
+            id="channelInput"
+            type="text"
+            maxlength="32"
+            placeholder="nuevo-canal"
+            autocomplete="off"
+          />
+          <button type="submit">Crear</button>
+        </form>
+        <div id="channels" class="channels"></div>
+      </aside>
+
+      <main class="chat">
+        <header class="chat-header">
+          <h2 id="channelTitle"># sin-canal</h2>
+          <div class="chat-header-actions">
+            <button id="clearMessagesButton" type="button" class="clear-messages">
+              Limpiar mensajes
+            </button>
+            <span id="statusText">Desconectado</span>
+          </div>
+        </header>
+        <section id="messages" class="messages"></section>
+        <form id="messageForm" class="message-form">
+          <button
+            id="emojiToggleButton"
+            type="button"
+            class="emoji-toggle"
+            title="Agregar emoji"
+            disabled
+          >
+            🙂
+          </button>
+          <input
+            id="messageInput"
+            type="text"
+            maxlength="500"
+            placeholder="Escribí un mensaje..."
+            autocomplete="off"
+            disabled
+          />
+          <button id="sendButton" type="submit" disabled>Enviar</button>
+        </form>
+        <div id="emojiPicker" class="emoji-picker hidden"></div>
+      </main>
+
+      <aside class="members">
+        <h3>Miembros conectados</h3>
+        <ul id="membersList"></ul>
+      </aside>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
